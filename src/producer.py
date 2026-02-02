@@ -1,24 +1,34 @@
-from kafka import KafkaProducer
+from confluent_kafka import Producer
 import json
 import time
 
-producer = KafkaProducer(
-    bootstrap_servers="localhost:9092",
-    value_serializer=lambda v: json.dumps(v).encode("utf-8")
-)
+conf = {
+    "bootstrap.servers": "localhost:9092"
+}
 
-topic_name = "test-topic"
+producer = Producer(conf)
+
+topic = "test-topic"
+
+def delivery_report(err, msg):
+    if err is not None:
+        print(f"Delivery failed: {err}")
+    else:
+        print(f"Message delivered to {msg.topic()} [{msg.partition()}]")
 
 for i in range(5):
-    message = {
+    data = {
         "event_id": i,
-        "event_type": "demo",
         "message": f"hello kafka {i}"
     }
 
-    producer.send(topic_name, message)
-    print("sent:", message)
+    producer.produce(
+        topic,
+        value=json.dumps(data),
+        callback=delivery_report
+    )
+
+    producer.poll(0)
     time.sleep(1)
 
 producer.flush()
-producer.close()
