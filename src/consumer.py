@@ -1,16 +1,21 @@
-from kafka import KafkaConsumer
-import json
+from confluent_kafka import Consumer
 
-consumer = KafkaConsumer(
-    "test-topic",
-    bootstrap_servers="localhost:9092",
-    auto_offset_reset="earliest",
-    enable_auto_commit=True,
-    group_id="demo-consumer-group",
-    value_deserializer=lambda v: json.loads(v.decode("utf-8"))
-)
+conf = {
+    "bootstrap.servers": "localhost:9092",
+    "group.id": "demo-group",
+    "auto.offset.reset": "earliest"
+    }
 
-print("Waiting for messages...")
+consumer = Consumer(conf)
+consumer.subscribe(["test-topic"])
 
-for msg in consumer:
-    print("received:", msg.value)
+print("Waiting for messages....j")
+
+while True:
+    msg = consumer.poll(1.0)
+    if msg is None:
+        continue
+    if msg.error():
+        print("Error:", msg.error())
+        continue
+    print("received:", msg.value().decode("utf-8"))
