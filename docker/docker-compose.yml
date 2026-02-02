@@ -21,7 +21,7 @@ services:
 
       # Listener internal + external
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
 
       # Single broker safe config
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
