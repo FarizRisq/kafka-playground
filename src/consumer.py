@@ -2,7 +2,7 @@ from confluent_kafka import Consumer
 
 conf = {
     "bootstrap.servers": "localhost:9092",
-    "group.id": "demo-group 2",
+    "group.id": "demo-group-v2",
     "auto.offset.reset": "earliest"
     }
 
